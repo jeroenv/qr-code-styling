@@ -427,9 +427,9 @@ const QRSVG: FC<RequiredOptions> = (options) => {
 
   return (
     <svg
-      viewBox={`0 0 ${options.width} ${options.height}`}
-      width={width}
-      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      width={options.width}
+      height={options.height}
       xmlns="http://www.w3.org/2000/svg"
     >
       {elements}
