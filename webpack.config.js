@@ -8,6 +8,7 @@ const libPath = path.resolve(rootPath, "lib");
 module.exports = {
   entry: "./src/index.ts",
   output: {
+    globalObject: "typeof self !== 'undefined' ? self : this",
     path: libPath,
     filename: "qr-code-styling.js",
     library: "QRCodeStyling",
