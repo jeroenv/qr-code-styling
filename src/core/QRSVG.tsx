@@ -29,9 +29,9 @@ const dotMask = [
 ];
 
 const QRSVG: FC<RequiredOptions> = (options) => {
+  const width = 64;
+  const height = 64;
   const {
-    width,
-    height,
     margin,
     backgroundOptions,
     qrOptions,
@@ -141,8 +141,6 @@ const QRSVG: FC<RequiredOptions> = (options) => {
     ].forEach(([column, row, rotation]) => {
       const x = xBeginning + column * dotSize * (count - 7);
       const y = yBeginning + row * dotSize * (count - 7);
-
-      debugger;
 
       if (cornersSquareOptions?.gradient || cornersSquareOptions?.color) {
         _createColor({
@@ -428,7 +426,12 @@ const QRSVG: FC<RequiredOptions> = (options) => {
   console.log(defs);
 
   return (
-    <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg">
+    <svg
+      viewBox={`0 0 ${options.width} ${options.height}`}
+      width={width}
+      height={height}
+      xmlns="http://www.w3.org/2000/svg"
+    >
       {elements}
       <defs>
         {defs.map((def) => def)}
