@@ -181,6 +181,8 @@ const QRSVG: FC<RequiredOptions> = (options) => {
       }
 
       if (cornersSquareClipPath) {
+        console.log(cornersSquareClipPath);
+
         defs.push(<clipPath id={`clip-path-corners-square-color-${column}-${row}`}>{cornersSquareClipPath}</clipPath>);
       }
 
@@ -222,6 +224,8 @@ const QRSVG: FC<RequiredOptions> = (options) => {
           }
         }
       }
+
+      console.log(cornersDotClipPath);
 
       if (cornersDotClipPath) {
         defs.push(<clipPath id={`clip-path-corners-dot-color-${column}-${row}`}>{cornersDotClipPath}</clipPath>);
