@@ -196,6 +196,8 @@ export default class QRDot {
 
       return this._basicSideRounded({ x, y, size, rotation });
     }
+
+    return null;
   }
 
   _drawExtraRounded({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
@@ -241,6 +243,8 @@ export default class QRDot {
 
       return this._basicSideRounded({ x, y, size, rotation });
     }
+
+    return null;
   }
 
   _drawClassy({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
@@ -263,7 +267,7 @@ export default class QRDot {
       return this._basicCornerRounded({ x, y, size, rotation: Math.PI / 2 });
     }
 
-    this._basicSquare({ x, y, size, rotation: 0 });
+    return this._basicSquare({ x, y, size, rotation: 0 });
   }
 
   _drawClassyRounded({ x, y, size, getNeighbor }: DrawArgs): ReactNode {

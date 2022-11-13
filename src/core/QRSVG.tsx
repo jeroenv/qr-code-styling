@@ -1,13 +1,12 @@
 import React, { FC, ReactNode } from "react";
-import calculateImageSize from "../tools/calculateImageSize";
-import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/svg/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
-import { QRCode, FilterFunction, Gradient } from "../types";
+import { FilterFunction, Gradient } from "../types";
 import getMode from "../tools/getMode";
+import qrcode from "qrcode-generator";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -34,7 +33,6 @@ const QRSVG: FC<RequiredOptions> = (options) => {
     width,
     height,
     margin,
-    image,
     backgroundOptions,
     qrOptions,
     data,
@@ -50,8 +48,8 @@ const QRSVG: FC<RequiredOptions> = (options) => {
   qr.make();
 
   const count = qr.getModuleCount();
-  const minSize = Math.min(width, height) - margin * 2;
-  const dotSize = Math.floor(minSize / count);
+  //const minSize = Math.min(width, height) - margin * 2;
+  //const dotSize = Math.floor(minSize / count);
   const drawImageSize = {
     hideXDots: 0,
     hideYDots: 0,
@@ -231,7 +229,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
     });
   };
 
-  const loadImage = () => {
+  /* const loadImage = () => {
     const image = new Image();
 
     //if (!options.image) {
@@ -248,9 +246,9 @@ const QRSVG: FC<RequiredOptions> = (options) => {
     if (options.image) {
       image.src = options.image;
     }
-  };
+  }; */
 
-  const drawImage = ({
+  /* const drawImage = ({
     width,
     height,
     count,
@@ -276,7 +274,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
     image.setAttribute("height", `${dh}px`);
 
     //this._element.appendChild(image);
-  };
+  }; */
 
   const _createColor = ({
     options,

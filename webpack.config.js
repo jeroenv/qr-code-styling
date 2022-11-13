@@ -6,7 +6,7 @@ const srcPath = path.resolve(rootPath, "src");
 const libPath = path.resolve(rootPath, "lib");
 
 module.exports = {
-  entry: srcPath + "/index.ts",
+  entry: "./src/index.ts",
   output: {
     path: libPath,
     filename: "qr-code-styling.js",
@@ -17,7 +17,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: "ts-loader",
         exclude: /node_modules/
       },
@@ -31,6 +31,6 @@ module.exports = {
   },
   plugins: [new CleanWebpackPlugin()],
   resolve: {
-    extensions: [".ts", ".js"]
+    extensions: [".ts", ".tsx", ".js", ".jsx"]
   }
 };
