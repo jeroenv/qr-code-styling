@@ -142,6 +142,8 @@ const QRSVG: FC<RequiredOptions> = (options) => {
       const x = xBeginning + column * dotSize * (count - 7);
       const y = yBeginning + row * dotSize * (count - 7);
 
+      debugger;
+
       if (cornersSquareOptions?.gradient || cornersSquareOptions?.color) {
         _createColor({
           options: cornersSquareOptions?.gradient,
@@ -180,7 +182,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
         }
       }
 
-      if (cornersSquareClipPath) {
+      if (cornersSquareClipPath.length) {
         console.log(cornersSquareClipPath);
 
         defs.push(<clipPath id={`clip-path-corners-square-color-${column}-${row}`}>{cornersSquareClipPath}</clipPath>);
@@ -227,7 +229,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
 
       console.log(cornersDotClipPath);
 
-      if (cornersDotClipPath) {
+      if (cornersDotClipPath.length) {
         defs.push(<clipPath id={`clip-path-corners-dot-color-${column}-${row}`}>{cornersDotClipPath}</clipPath>);
       }
     });
