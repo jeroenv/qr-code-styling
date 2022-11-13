@@ -11,7 +11,7 @@ export default class QRCornerSquare {
     this._type = type;
   }
 
-  draw(x: number, y: number, size: number, rotation: number): void {
+  draw(x: number, y: number, size: number, rotation: number): ReactNode {
     const type = this._type;
     let drawFunction;
 

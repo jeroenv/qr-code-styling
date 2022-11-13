@@ -1,17 +1,15 @@
+import React, { ReactNode } from "react";
 import dotTypes from "../../../constants/dotTypes";
 import { DotType, GetNeighbor, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs } from "../../../types";
 
 export default class QRDot {
-  _element?: SVGElement;
-  _svg: SVGElement;
   _type: DotType;
 
-  constructor({ svg, type }: { svg: SVGElement; type: DotType }) {
-    this._svg = svg;
+  constructor({ type }: { type: DotType }) {
     this._type = type;
   }
 
-  draw(x: number, y: number, size: number, getNeighbor: GetNeighbor): void {
+  draw(x: number, y: number, size: number, getNeighbor: GetNeighbor): ReactNode {
     const type = this._type;
     let drawFunction;
 
@@ -36,134 +34,126 @@ export default class QRDot {
         drawFunction = this._drawSquare;
     }
 
-    drawFunction.call(this, { x, y, size, getNeighbor });
+    return drawFunction.call(this, { x, y, size, getNeighbor });
   }
 
-  _rotateFigure({ x, y, size, rotation = 0, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, rotation = 0, draw }: RotateFigureArgs): ReactNode {
     const cx = x + size / 2;
     const cy = y + size / 2;
 
-    draw();
-    this._element?.setAttribute("transform", `rotate(${(180 * rotation) / Math.PI},${cx},${cy})`);
+    return draw(`rotate(${(180 * rotation) / Math.PI},${cx},${cy})`);
   }
 
-  _basicDot(args: BasicFigureDrawArgs): void {
+  _basicDot(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        this._element.setAttribute("cx", String(x + size / 2));
-        this._element.setAttribute("cy", String(y + size / 2));
-        this._element.setAttribute("r", String(size / 2));
-      }
+      draw: (rotation) => <circle cx={x + size / 2} cy={y + size / 2} r={size / 2} transform={rotation} />
     });
   }
 
-  _basicSquare(args: BasicFigureDrawArgs): void {
+  _basicSquare(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        this._element.setAttribute("x", String(x));
-        this._element.setAttribute("y", String(y));
-        this._element.setAttribute("width", String(size));
-        this._element.setAttribute("height", String(size));
-      }
+      draw: (rotation) => <rect x={x} y={y} width={size} height={size} transform={rotation} />
     });
   }
 
   //if rotation === 0 - right side is rounded
-  _basicSideRounded(args: BasicFigureDrawArgs): void {
+  _basicSideRounded(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute(
-          "d",
-          `M ${x} ${y}` + //go to top left position
+      draw: (rotation) => (
+        <path
+          d={
+            `M ${x} ${y}` + //go to top left position
             `v ${size}` + //draw line to left bottom corner
             `h ${size / 2}` + //draw line to left bottom corner + half of size right
-            `a ${size / 2} ${size / 2}, 0, 0, 0, 0 ${-size}` // draw rounded corner
-        );
-      }
+            `a ${size / 2} ${size / 2}, 0, 0, 0, 0 ${-size}` // draw rounded corner}
+          }
+          transform={rotation}
+        />
+      )
     });
   }
 
   //if rotation === 0 - top right corner is rounded
-  _basicCornerRounded(args: BasicFigureDrawArgs): void {
+  _basicCornerRounded(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute(
-          "d",
-          `M ${x} ${y}` + //go to top left position
+      draw: (rotation) => (
+        <path
+          d={
+            `M ${x} ${y}` + //go to top left position
             `v ${size}` + //draw line to left bottom corner
             `h ${size}` + //draw line to right bottom corner
             `v ${-size / 2}` + //draw line to right bottom corner + half of size top
             `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded corner
-        );
-      }
+          }
+          transform={rotation}
+        />
+      )
     });
   }
 
   //if rotation === 0 - top right corner is rounded
-  _basicCornerExtraRounded(args: BasicFigureDrawArgs): void {
+  _basicCornerExtraRounded(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute(
-          "d",
-          `M ${x} ${y}` + //go to top left position
+      draw: (rotation) => (
+        <path
+          d={
+            `M ${x} ${y}` + //go to top left position
             `v ${size}` + //draw line to left bottom corner
             `h ${size}` + //draw line to right bottom corner
             `a ${size} ${size}, 0, 0, 0, ${-size} ${-size}` // draw rounded top right corner
-        );
-      }
+          }
+          transform={rotation}
+        />
+      )
     });
   }
 
   //if rotation === 0 - left bottom and right top corners are rounded
-  _basicCornersRounded(args: BasicFigureDrawArgs): void {
+  _basicCornersRounded(args: BasicFigureDrawArgs): ReactNode {
     const { size, x, y } = args;
 
-    this._rotateFigure({
+    return this._rotateFigure({
       ...args,
-      draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute(
-          "d",
-          `M ${x} ${y}` + //go to left top position
+      draw: (rotation) => (
+        <path
+          d={
+            `M ${x} ${y}` + //go to left top position
             `v ${size / 2}` + //draw line to left top corner + half of size bottom
             `a ${size / 2} ${size / 2}, 0, 0, 0, ${size / 2} ${size / 2}` + // draw rounded left bottom corner
             `h ${size / 2}` + //draw line to right bottom corner
             `v ${-size / 2}` + //draw line to right bottom corner + half of size top
             `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded right top corner
-        );
-      }
+          }
+          transform={rotation}
+        />
+      )
     });
   }
 
-  _drawDot({ x, y, size }: DrawArgs): void {
-    this._basicDot({ x, y, size, rotation: 0 });
+  _drawDot({ x, y, size }: DrawArgs): ReactNode {
+    return this._basicDot({ x, y, size, rotation: 0 });
   }
 
-  _drawSquare({ x, y, size }: DrawArgs): void {
-    this._basicSquare({ x, y, size, rotation: 0 });
+  _drawSquare({ x, y, size }: DrawArgs): ReactNode {
+    return this._basicSquare({ x, y, size, rotation: 0 });
   }
 
-  _drawRounded({ x, y, size, getNeighbor }: DrawArgs): void {
+  _drawRounded({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
     const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
@@ -172,13 +162,11 @@ export default class QRDot {
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
     if (neighborsCount === 0) {
-      this._basicDot({ x, y, size, rotation: 0 });
-      return;
+      return this._basicDot({ x, y, size, rotation: 0 });
     }
 
     if (neighborsCount > 2 || (leftNeighbor && rightNeighbor) || (topNeighbor && bottomNeighbor)) {
-      this._basicSquare({ x, y, size, rotation: 0 });
-      return;
+      return this._basicSquare({ x, y, size, rotation: 0 });
     }
 
     if (neighborsCount === 2) {
@@ -192,8 +180,7 @@ export default class QRDot {
         rotation = -Math.PI / 2;
       }
 
-      this._basicCornerRounded({ x, y, size, rotation });
-      return;
+      return this._basicCornerRounded({ x, y, size, rotation });
     }
 
     if (neighborsCount === 1) {
@@ -207,12 +194,11 @@ export default class QRDot {
         rotation = -Math.PI / 2;
       }
 
-      this._basicSideRounded({ x, y, size, rotation });
-      return;
+      return this._basicSideRounded({ x, y, size, rotation });
     }
   }
 
-  _drawExtraRounded({ x, y, size, getNeighbor }: DrawArgs): void {
+  _drawExtraRounded({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
     const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
@@ -221,13 +207,11 @@ export default class QRDot {
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
     if (neighborsCount === 0) {
-      this._basicDot({ x, y, size, rotation: 0 });
-      return;
+      return this._basicDot({ x, y, size, rotation: 0 });
     }
 
     if (neighborsCount > 2 || (leftNeighbor && rightNeighbor) || (topNeighbor && bottomNeighbor)) {
-      this._basicSquare({ x, y, size, rotation: 0 });
-      return;
+      return this._basicSquare({ x, y, size, rotation: 0 });
     }
 
     if (neighborsCount === 2) {
@@ -241,8 +225,7 @@ export default class QRDot {
         rotation = -Math.PI / 2;
       }
 
-      this._basicCornerExtraRounded({ x, y, size, rotation });
-      return;
+      return this._basicCornerExtraRounded({ x, y, size, rotation });
     }
 
     if (neighborsCount === 1) {
@@ -256,12 +239,11 @@ export default class QRDot {
         rotation = -Math.PI / 2;
       }
 
-      this._basicSideRounded({ x, y, size, rotation });
-      return;
+      return this._basicSideRounded({ x, y, size, rotation });
     }
   }
 
-  _drawClassy({ x, y, size, getNeighbor }: DrawArgs): void {
+  _drawClassy({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
     const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
@@ -270,24 +252,21 @@ export default class QRDot {
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
     if (neighborsCount === 0) {
-      this._basicCornersRounded({ x, y, size, rotation: Math.PI / 2 });
-      return;
+      return this._basicCornersRounded({ x, y, size, rotation: Math.PI / 2 });
     }
 
     if (!leftNeighbor && !topNeighbor) {
-      this._basicCornerRounded({ x, y, size, rotation: -Math.PI / 2 });
-      return;
+      return this._basicCornerRounded({ x, y, size, rotation: -Math.PI / 2 });
     }
 
     if (!rightNeighbor && !bottomNeighbor) {
-      this._basicCornerRounded({ x, y, size, rotation: Math.PI / 2 });
-      return;
+      return this._basicCornerRounded({ x, y, size, rotation: Math.PI / 2 });
     }
 
     this._basicSquare({ x, y, size, rotation: 0 });
   }
 
-  _drawClassyRounded({ x, y, size, getNeighbor }: DrawArgs): void {
+  _drawClassyRounded({ x, y, size, getNeighbor }: DrawArgs): ReactNode {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
     const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
@@ -296,20 +275,17 @@ export default class QRDot {
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
     if (neighborsCount === 0) {
-      this._basicCornersRounded({ x, y, size, rotation: Math.PI / 2 });
-      return;
+      return this._basicCornersRounded({ x, y, size, rotation: Math.PI / 2 });
     }
 
     if (!leftNeighbor && !topNeighbor) {
-      this._basicCornerExtraRounded({ x, y, size, rotation: -Math.PI / 2 });
-      return;
+      return this._basicCornerExtraRounded({ x, y, size, rotation: -Math.PI / 2 });
     }
 
     if (!rightNeighbor && !bottomNeighbor) {
-      this._basicCornerExtraRounded({ x, y, size, rotation: Math.PI / 2 });
-      return;
+      return this._basicCornerExtraRounded({ x, y, size, rotation: Math.PI / 2 });
     }
 
-    this._basicSquare({ x, y, size, rotation: 0 });
+    return this._basicSquare({ x, y, size, rotation: 0 });
   }
 }

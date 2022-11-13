@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface UnknownObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -164,7 +166,7 @@ export type RotateFigureArgs = {
   y: number;
   size: number;
   rotation?: number;
-  draw: () => void;
+  draw: (rotation: string) => ReactNode;
 };
 
 export type DrawArgsCanvas = DrawArgs & {

@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import cornerDotTypes from "../../../constants/cornerDotTypes";
 import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../../types";
 
@@ -11,7 +12,7 @@ export default class QRCornerDot {
     this._type = type;
   }
 
-  draw(x: number, y: number, size: number, rotation: number): void {
+  draw(x: number, y: number, size: number, rotation: number): ReactNode {
     const type = this._type;
     let drawFunction;
 
