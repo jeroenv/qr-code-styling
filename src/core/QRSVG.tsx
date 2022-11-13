@@ -29,8 +29,8 @@ const dotMask = [
 ];
 
 const QRSVG: FC<RequiredOptions> = (options) => {
-  const width = 64;
-  const height = 64;
+  const width = 1024;
+  const height = 1024;
   const {
     margin,
     backgroundOptions,
