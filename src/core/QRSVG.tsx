@@ -180,7 +180,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
         }
       }
 
-      if (cornersSquareOptions?.gradient || cornersSquareOptions?.color) {
+      if (cornersSquareClipPath) {
         defs.push(<clipPath id={`clip-path-corners-square-color-${column}-${row}`}>{cornersSquareClipPath}</clipPath>);
       }
 
@@ -223,7 +223,7 @@ const QRSVG: FC<RequiredOptions> = (options) => {
         }
       }
 
-      if (cornersDotOptions?.gradient || cornersDotOptions?.color) {
+      if (cornersDotClipPath) {
         defs.push(<clipPath id={`clip-path-corners-dot-color-${column}-${row}`}>{cornersDotClipPath}</clipPath>);
       }
     });
@@ -418,6 +418,8 @@ const QRSVG: FC<RequiredOptions> = (options) => {
   //if (this._options.image) {
   //  this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
   //}
+
+  console.log(defs);
 
   return (
     <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg">
