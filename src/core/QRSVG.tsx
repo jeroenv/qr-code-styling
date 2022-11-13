@@ -1,4 +1,4 @@
-import React, {FC, ReactNode} from "react"
+import React, { FC, ReactNode } from "react";
 import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/svg/QRDot";
@@ -29,8 +29,20 @@ const dotMask = [
   [0, 0, 0, 0, 0, 0, 0]
 ];
 
-const QRSVG:FC<RequiredOptions> = (options) => {
-  const { width, height, margin, image, backgroundOptions, qrOptions, data, dotsOptions, imageOptions, cornersSquareOptions, cornersDotOptions } = options;
+const QRSVG: FC<RequiredOptions> = (options) => {
+  const {
+    width,
+    height,
+    margin,
+    image,
+    backgroundOptions,
+    qrOptions,
+    data,
+    dotsOptions,
+    imageOptions,
+    cornersSquareOptions,
+    cornersDotOptions
+  } = options;
 
   // TODO make hook
   const qr = qrcode(qrOptions.typeNumber, qrOptions.errorCorrectionLevel);
@@ -40,7 +52,7 @@ const QRSVG:FC<RequiredOptions> = (options) => {
   const count = qr.getModuleCount();
   const minSize = Math.min(width, height) - margin * 2;
   const dotSize = Math.floor(minSize / count);
-  let drawImageSize = {
+  const drawImageSize = {
     hideXDots: 0,
     hideYDots: 0,
     width: 0,
@@ -67,7 +79,7 @@ const QRSVG:FC<RequiredOptions> = (options) => {
         name: "background-color"
       });
     }
-  }
+  };
 
   const drawDots = (filter?: FilterFunction) => {
     //if (count > options.width || count > options.height) {
@@ -80,7 +92,6 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     const yBeginning = Math.floor((height - count * dotSize) / 2);
     const dot = new QRDot({ type: dotsOptions.type });
 
-  
     _createColor({
       options: dotsOptions?.gradient,
       color: dotsOptions.color,
@@ -92,7 +103,6 @@ const QRSVG:FC<RequiredOptions> = (options) => {
       name: "dot-color"
     });
 
-
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < count; j++) {
         if (filter && !filter(i, j)) {
@@ -102,7 +112,8 @@ const QRSVG:FC<RequiredOptions> = (options) => {
           continue;
         }
 
-        dots.push(dot.draw(
+        dots.push(
+          dot.draw(
             xBeginning + i * dotSize,
             yBeginning + j * dotSize,
             dotSize,
@@ -112,12 +123,12 @@ const QRSVG:FC<RequiredOptions> = (options) => {
               return !!qr && qr.isDark(i + xOffset, j + yOffset);
             }
           )
-        )
+        );
       }
     }
-  }
+  };
 
-  const drawCorners = () => {    
+  const drawCorners = () => {
     const minSize = Math.min(width, height) - margin * 2;
     const dotSize = Math.floor(minSize / count);
     const cornersSquareSize = dotSize * 7;
@@ -132,7 +143,7 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     ].forEach(([column, row, rotation]) => {
       const x = xBeginning + column * dotSize * (count - 7);
       const y = yBeginning + row * dotSize * (count - 7);
-      
+
       if (cornersSquareOptions?.gradient || cornersSquareOptions?.color) {
         _createColor({
           options: cornersSquareOptions?.gradient,
@@ -159,20 +170,20 @@ const QRSVG:FC<RequiredOptions> = (options) => {
               continue;
             }
 
-            cornersSquareClipPath.push(dot.draw(
-              x + i * dotSize,
-              y + j * dotSize,
-              dotSize,
-              (xOffset: number, yOffset: number): boolean => !!squareMask[i + xOffset]?.[j + yOffset]
-            ));
+            cornersSquareClipPath.push(
+              dot.draw(
+                x + i * dotSize,
+                y + j * dotSize,
+                dotSize,
+                (xOffset: number, yOffset: number): boolean => !!squareMask[i + xOffset]?.[j + yOffset]
+              )
+            );
           }
         }
       }
 
-      if(cornersSquareOptions?.gradient || cornersSquareOptions?.color){
-        defs.push(<clipPath id={`clip-path-corners-square-color-${column}-${row}`}>
-          {cornersSquareClipPath}
-        </clipPath>)
+      if (cornersSquareOptions?.gradient || cornersSquareOptions?.color) {
+        defs.push(<clipPath id={`clip-path-corners-square-color-${column}-${row}`}>{cornersSquareClipPath}</clipPath>);
       }
 
       const cornersDotClipPath = new Array<ReactNode>();
@@ -193,7 +204,6 @@ const QRSVG:FC<RequiredOptions> = (options) => {
         const cornersDot = new QRCornerDot({ type: cornersDotOptions.type });
 
         cornersDotClipPath.push(cornersDot.draw(x + dotSize * 2, y + dotSize * 2, cornersDotSize, rotation));
-
       } else {
         const dot = new QRDot({ type: dotsOptions.type });
 
@@ -203,27 +213,25 @@ const QRSVG:FC<RequiredOptions> = (options) => {
               continue;
             }
 
-            cornersDotClipPath.push(dot.draw(
-              x + i * dotSize,
-              y + j * dotSize,
-              dotSize,
-              (xOffset: number, yOffset: number): boolean => !!dotMask[i + xOffset]?.[j + yOffset]
-            ));
-
+            cornersDotClipPath.push(
+              dot.draw(
+                x + i * dotSize,
+                y + j * dotSize,
+                dotSize,
+                (xOffset: number, yOffset: number): boolean => !!dotMask[i + xOffset]?.[j + yOffset]
+              )
+            );
           }
         }
       }
 
       if (cornersDotOptions?.gradient || cornersDotOptions?.color) {
-         defs.push(<clipPath id={`clip-path-corners-dot-color-${column}-${row}`}>
-          {cornersDotClipPath}
-        </clipPath>)
+        defs.push(<clipPath id={`clip-path-corners-dot-color-${column}-${row}`}>{cornersDotClipPath}</clipPath>);
       }
     });
-  }
+  };
 
-  const loadImage =  () => {
-    const options = this._options;
+  const loadImage = () => {
     const image = new Image();
 
     //if (!options.image) {
@@ -234,14 +242,13 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     //  image.crossOrigin = options.imageOptions.crossOrigin;
     //}
 
-    this._image = image;
     //image.onload = (): void => {
     //resolve();
     //};
     if (options.image) {
       image.src = options.image;
     }
-  }
+  };
 
   const drawImage = ({
     width,
@@ -253,8 +260,7 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     height: number;
     count: number;
     dotSize: number;
-  }): void {
-    const options = this._options;
+  }): void => {
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
     const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
@@ -269,8 +275,8 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     image.setAttribute("width", `${dw}px`);
     image.setAttribute("height", `${dh}px`);
 
-    this._element.appendChild(image);
-  }
+    //this._element.appendChild(image);
+  };
 
   const _createColor = ({
     options,
@@ -290,17 +296,30 @@ const QRSVG:FC<RequiredOptions> = (options) => {
     height: number;
     width: number;
     name: string;
-  }): void {
+  }) => {
     const size = width > height ? width : height;
 
     let gradient: ReactNode;
     if (options) {
-      const getColorStops = (): ReactNode[] => options.colorStops.map(({ offset, color }: { offset: number; color: string }) => <stop offset={`${100 * offset}%`} stopColor={color} />);
-      
+      const getColorStops = (): ReactNode[] =>
+        options.colorStops.map(({ offset, color }: { offset: number; color: string }) => (
+          <stop offset={`${100 * offset}%`} stopColor={color} />
+        ));
+
       if (options.type === gradientTypes.radial) {
-        gradient = <radialGradient id={name} gradientUnits="userSpaceOnUse" fx={x+width/2} fy={y + height/2} cx={x + width/2} cy={y + height/2} r={size/2}>
-          {getColorStops()}
-        </radialGradient>;
+        gradient = (
+          <radialGradient
+            id={name}
+            gradientUnits="userSpaceOnUse"
+            fx={x + width / 2}
+            fy={y + height / 2}
+            cx={x + width / 2}
+            cy={y + height / 2}
+            r={size / 2}
+          >
+            {getColorStops()}
+          </radialGradient>
+        );
       } else {
         const rotation = ((options.rotation || 0) + additionalRotation) % (2 * Math.PI);
         const positiveRotation = (rotation + 2 * Math.PI) % (2 * Math.PI);
@@ -333,15 +352,26 @@ const QRSVG:FC<RequiredOptions> = (options) => {
           y1 = y1 - height / 2;
           x1 = x1 - width / 2 / Math.tan(rotation);
         }
-        gradient = <linearGradient id={name} gradientUnits="userSpaceOnUse" x1={x0} y1={y0} x2={x1} y2={y1}>
-          {getColorStops()}
-        </linearGradient>;
+        gradient = (
+          <linearGradient id={name} gradientUnits="userSpaceOnUse" x1={x0} y1={y0} x2={x1} y2={y1}>
+            {getColorStops()}
+          </linearGradient>
+        );
       }
       defs.push(gradient);
-    } 
+    }
 
-    elements.push(<rect x={x} y={y} height={height} width={width} clipPath={`url('#clip-path-${name}')`} fill={gradient?`url('#${name}')`:color} />)
-  }
+    elements.push(
+      <rect
+        x={x}
+        y={y}
+        height={height}
+        width={width}
+        clipPath={`url('#clip-path-${name}')`}
+        fill={gradient ? `url('#${name}')` : color}
+      />
+    );
+  };
 
   drawBackground();
 
@@ -361,7 +391,6 @@ const QRSVG:FC<RequiredOptions> = (options) => {
       dotSize
     });
   }*/
-
 
   drawDots((i: number, j: number): boolean => {
     if (imageOptions.hideBackgroundDots) {
@@ -385,15 +414,14 @@ const QRSVG:FC<RequiredOptions> = (options) => {
 
     return true;
   });
-  
+
   drawCorners();
 
-    //if (this._options.image) {
-    //  this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
-    //}
+  //if (this._options.image) {
+  //  this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
+  //}
 
-
-  return  (
+  return (
     <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg">
       {elements}
       <defs>
@@ -401,7 +429,7 @@ const QRSVG:FC<RequiredOptions> = (options) => {
         <clipPath id="clip-path-dot-color">{dots}</clipPath>
       </defs>
     </svg>
-  )
-}
+  );
+};
 
-export default QRSVG
+export default QRSVG;
